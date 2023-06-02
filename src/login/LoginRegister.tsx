@@ -190,6 +190,8 @@ const LoginRegister = () => {
 
     if (typeof e.target.files[0] !== "undefined") {
       setImage(URL.createObjectURL(e.target.files[0]));
+    } else {
+      setImage("https://dummyimage.com/300x300");
     }
   };
 
