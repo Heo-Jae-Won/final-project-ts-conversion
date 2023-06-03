@@ -1,7 +1,7 @@
+import { useUserStore } from "module/module.user";
 import React from "react";
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../model/user.store";
 
 /**
  * header 화면
@@ -12,13 +12,16 @@ const HeaderPage = () => {
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
   const resetLoginUser = useUserStore((state) => state.resetLoginUser);
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    const href = e.target.getAttribute("href");
+  const handleClick: React.MouseEventHandler<HTMLElement> = ($event) => {
+    $event.preventDefault();
+    const target = $event.target as HTMLAnchorElement;
+    const href = target.getAttribute("href") as string;
     navigate(href);
   };
 
-  const handleLogoutClick = async (e) => {
+  const handleLogoutClick: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
     resetLoginUser();
     navigate("/");
   };

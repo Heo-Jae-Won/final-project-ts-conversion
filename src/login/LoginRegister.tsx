@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Alert, Button, Card, Form, Row } from "react-bootstrap";
 
 import { useNavigate } from "react-router-dom";
-import { useAddressStore } from "../model/address.store";
-import { useBirthStore } from "../model/birth.store";
+import { useAddressStore } from "../module/module.address";
 import {
   checkDuplicationUserId,
   checkDuplicationUserNickname,
@@ -30,6 +29,7 @@ import {
 } from "../util/swal/service.exception";
 import Address from "./Address";
 import Birth from "./Birth";
+import { useBirthStore } from "module/module.birth";
 
 /**
  * 회원가입 화면

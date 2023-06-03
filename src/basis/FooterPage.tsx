@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 const FooterPage = () => {
   const navigate = useNavigate();
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    const href = e.target.getAttribute("href");
+  const handleClick: React.MouseEventHandler<HTMLElement> = ($event) => {
+    $event.preventDefault();
+    const target = $event.target as HTMLAnchorElement;
+    const href = target.getAttribute("href") as string;
     navigate(href);
   };
 

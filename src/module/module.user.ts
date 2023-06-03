@@ -1,13 +1,21 @@
 import { create } from "zustand";
 import { getUserInfo } from "../util/axios/basis";
 import { createJSONStorage, persist } from "zustand/middleware";
-export const useUserStore = create(
+interface UserState {
+  loginUserId: string;
+  loginUserNickname: string;
+  loginUserProfile: string;
+  fetchLoginUser: (userId: string) => Promise<void>;
+  resetLoginUser: () => void;
+}
+
+export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       loginUserId: "",
       loginUserNickname: "",
       loginUserProfile: "",
-      fetchLoginUser: async (userId) => {
+      fetchLoginUser: async (userId: string) => {
         const result = (await getUserInfo(userId)).data;
         set({
           loginUserId: result.userId,

@@ -5,13 +5,14 @@ import "slick-carousel/slick/slick.css";
 import "../Carousel.css";
 import BestItem from "./BestItem";
 import { getProductBoardBest } from "../util/axios/basis";
+import { BestProduct } from "model/model.best.product";
 
 /**
  * 최다 좋아요 상품 소개 기능
  */
 
 const BestList = () => {
-  const [bestList, setBestList] = useState([]);
+  const [bestList, setBestList] = useState<Array<BestProduct>>([]);
 
   const fetchProductBoardBest = async () => {
     const result = (await getProductBoardBest()).data;

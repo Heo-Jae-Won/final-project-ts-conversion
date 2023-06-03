@@ -61,7 +61,7 @@ const AboutPage = () => {
           </div>
 
 
-      <div class="my-4" style={{ marginBottom: 140, marginTop: 230 }}>
+      <div className="my-4" style={{ marginBottom: 140, marginTop: 230 }}>
         <Row>
           <Col style={{ height: '230' }}>
             <Card style={{ width: '200px',  marginLeft: 230,height:223 }}>

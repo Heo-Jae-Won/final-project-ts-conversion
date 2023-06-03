@@ -2,7 +2,7 @@ import { Grid, TextField } from "@material-ui/core";
 import React, { useState } from 'react';
 import { Button } from "react-bootstrap";
 import DaumPostcode from "react-daum-postcode";
-import { useAddressStore } from "../model/address.store";
+import { useAddressStore } from "../module/module.address";
 
 /**
  * 주소를 지정하는 화면
