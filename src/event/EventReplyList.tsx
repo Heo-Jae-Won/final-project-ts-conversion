@@ -3,13 +3,14 @@ import { Button } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Pagination from "react-js-pagination";
 import "../Pagination.css";
-import { useUserStore } from "../model/user.store";
 import { deleteReply, getReplyList, insertReply } from "../util/axios/event";
 import { confirmDelete } from "../util/swal/confirmation";
 import { informSuccess } from "../util/swal/information";
+import { useUserStore } from "module/module.user";
+import { EventReply } from "model/model.event.reply";
 
-const EventReplyList = ({ eventCode }) => {
-  const [eventReplyList, setEventReplyList] = useState([]);
+const EventReplyList = ({ eventCode }: { eventCode: string }) => {
+  const [eventReplyList, setEventReplyList] = useState<Array<EventReply>>([]);
   const [eventReplyTotal, setEventReplyTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [eventReplyContent, setEventReplyContent] = useState("");
@@ -26,20 +27,23 @@ const EventReplyList = ({ eventCode }) => {
     fetchEventReplyList();
   }, [fetchEventReplyList, page]);
 
-  const handleReplyInsert = async (e) => {
-    if (e.keyCode === 13) {
+  const handleReplyInsert: React.KeyboardEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    if ($event.key === "Enter") {
       if (!eventReplyContent) {
         alert("내용을 입력해 주세요!");
         return;
       }
 
       //ctrl enter
-      if (e.ctrlKey) {
-        let val = e.target.value;
-        let start = e.target.selectionStart;
-        let end = e.target.selectionEnd;
-        e.target.value = val.substring(0, start) + "\n" + val.substring(end);
-        setEventReplyContent(e.target.value);
+      if ($event.ctrlKey) {
+        const target = $event.target as HTMLInputElement;
+        const val = target.value;
+        const start = target.selectionStart as number;
+        const end = target.selectionEnd as number;
+        target.value = val.substring(0, start) + "\n" + val.substring(end);
+        setEventReplyContent(target.value);
         return false;
       }
 
@@ -57,7 +61,7 @@ const EventReplyList = ({ eventCode }) => {
     }
   };
 
-  const handleReplyDelete = async (eventReplyCode) => {
+  const handleReplyDelete = async (eventReplyCode: number) => {
     const isConfirmed = (await confirmDelete()).isConfirmed;
     if (isConfirmed) {
       //댓글 삭제
@@ -67,8 +71,8 @@ const EventReplyList = ({ eventCode }) => {
     }
   };
 
-  const handlePageChange = (e) => {
-    setPage(e);
+  const handlePageChange = (pageNumber: number) => {
+    setPage(pageNumber);
     window.scrollTo({
       top: 400,
       left: 150,
@@ -98,7 +102,7 @@ const EventReplyList = ({ eventCode }) => {
       )}
 
       <hr />
-      {eventReplyList?.map((reply) => (
+      {eventReplyList?.map((reply: EventReply) => (
         <div
           className="u_cbox_comment_box u_cbox_type_profile"
           key={reply.eventReplyCode}
@@ -111,7 +115,7 @@ const EventReplyList = ({ eventCode }) => {
               <span className="u_cbox_contents">{reply.eventReplyContent}</span>
             </div>
             <div className="u_cbox_info_base">
-              <span className="u_cbox_date">{reply.regDate}</span>
+              <span className="u_cbox_date">{reply.eventReplyRegDate}</span>
               <span className="u_cbox_recomm_set">
                 {reply.eventReplyWriter === loginUserNickname &&
                 reply.adminDeleted !== 1 &&
@@ -136,7 +140,7 @@ const EventReplyList = ({ eventCode }) => {
           pageRangeDisplayed={5}
           prevPageText={"‹"}
           nextPageText={"›"}
-          onChange={(e) => handlePageChange(e)}
+          onChange={(pageNumber) => handlePageChange(pageNumber)}
         />
       </div>
     </div>

@@ -1,12 +1,14 @@
+import { Events } from "model/model.events";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 /**
  * EventList의 실제 화면
  */
-const EventItem = ({ eventList }) => {
+const EventItem = ({ eventList }: { eventList: Events }) => {
   const navigate = useNavigate();
-  const { eventCode, eventTitle, eventContent, eventWriter, eventRegDate } = eventList;
+  const { eventCode, eventTitle, eventContent, eventWriter, eventRegDate } =
+    eventList;
 
   return (
     <tr

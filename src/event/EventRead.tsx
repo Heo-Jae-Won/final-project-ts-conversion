@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getEventRead } from "../util/axios/event";
 import { useCallback } from "react";
 import EventReplyList from "./EventReplyList";
+import { Events } from "model/model.events";
 
 /**
  * Event 조회 화면
@@ -16,12 +17,13 @@ const EventRead = () => {
   const { eventCode } = useParams();
   const [loading, setLoading] = useState(false);
 
-  const [eventRead, setEventRead] = useState({
-    eventTitle: "",
-    eventContent: "",
-    eventWriter: "",
-    eventRegDate: "",
-  });
+  // const [eventRead, setEventRead] = useState<Events>({
+  //   eventTitle: "",
+  //   eventContent: "",
+  //   eventWriter: "",
+  //   eventRegDate: "",
+  // });
+  const [eventRead, setEventRead] = useState({} as Events);
 
   //이벤트 조회
   const fetchEventRead = useCallback(async () => {
@@ -74,7 +76,7 @@ const EventRead = () => {
       </div>
 
       {/* 댓글정보는 bno가 필요하기 때문에 bno를 가져가야 함. */}
-      <EventReplyList eventCode={eventCode} />
+      <EventReplyList eventCode={eventCode as string} />
       <Button
         style={{ marginTop: 100 }}
         onClick={() => {

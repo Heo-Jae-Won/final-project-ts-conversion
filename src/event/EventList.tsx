@@ -5,6 +5,7 @@ import Pagination from "react-js-pagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getEventList } from "../util/axios/event";
 import EventItem from "./EventItem";
+import { Events } from "model/model.events";
 
 /**
  * Event 목록 기능
@@ -13,7 +14,7 @@ import EventItem from "./EventItem";
 const EventList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("제목");
@@ -33,8 +34,10 @@ const EventList = () => {
   }, [page, query, searchType]);
 
   //요구조건에 따라 다시 이벤트 목록 검색
-  const fetchFilteredEventList = (e) => {
-    if (e.keyCode === 13) {
+  const fetchFilteredEventList: React.KeyboardEventHandler<HTMLElement> = (
+    $event
+  ) => {
+    if ($event.key === "Enter") {
       fetchEventList();
     }
   };
@@ -53,8 +56,8 @@ const EventList = () => {
     );
   }
 
-  const handlePageChange = (e) => {
-    navigate(`/event/list?page=${e}`);
+  const handlePageChange = (pageNumber: number) => {
+    navigate(`/event/list?page=${pageNumber}`);
     window.scrollTo({
       top: 0,
       left: 150,
@@ -90,7 +93,7 @@ const EventList = () => {
         className="search2"
         style={{ marginLeft: 15, marginBottom: 50, width: 200, marginTop: 100 }}
         onChange={(e) => setQuery(e.target.value)}
-        fetchFilteredEventList={fetchFilteredEventList}
+        onKeyDown={fetchFilteredEventList}
       ></TextField>
 
       <Table striped>
@@ -102,7 +105,7 @@ const EventList = () => {
           </tr>
         </thead>
         <tbody>
-          {eventList.map((eventList) => (
+          {eventList.map((eventList: Events) => (
             <>
               <EventItem key={eventList.eventCode} eventList={eventList} />
             </>
@@ -120,7 +123,7 @@ const EventList = () => {
           pageRangeDisplayed={10}
           prevPageText={"‹"}
           nextPageText={"›"}
-          onChange={(e) => handlePageChange(e)}
+          onChange={(pageNumber) => handlePageChange(pageNumber)}
         />{" "}
       </div>
     </div>
