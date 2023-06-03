@@ -17,7 +17,7 @@ const LoginRestore = () => {
     const isConfirmed = await confirmRestore();
     if (isConfirmed) {
       const formData = new FormData();
-      formData.append("userId", userId);
+      formData.append("userId", userId as string);
 
       //회원 복구
       await restoreUser(formData);

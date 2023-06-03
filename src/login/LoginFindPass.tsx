@@ -6,7 +6,7 @@ import { sendTempPassword } from "../util/axios/login";
 import { checkEmailValid } from "../util/regex/regex";
 import {
   informNotValid,
-  informSendingTempPassword
+  informSendingTempPassword,
 } from "../util/swal/information";
 import { requireInput, requireValidationPass } from "../util/swal/requirement";
 
@@ -24,15 +24,18 @@ const LoginFindPass = () => {
 
   const { userId, userEmail } = form;
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleTempPasswordSend = async (e) => {
-    e.preventDefault();
+  const handleTempPasswordSend: React.FormEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
 
     if (!userId || !userEmail) {
       requireInput();

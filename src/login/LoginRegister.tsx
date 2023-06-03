@@ -66,8 +66,10 @@ const LoginRegister = () => {
     file,
   } = form;
 
-  const handleDuplicationUserNicknameCheck = async (e) => {
-    e.preventDefault();
+  const handleDuplicationUserNicknameCheck: React.MouseEventHandler<
+    HTMLElement
+  > = async ($event) => {
+    $event.preventDefault();
 
     if (!userNickname) {
       requireInput();
@@ -87,8 +89,10 @@ const LoginRegister = () => {
       : setMessage("비밀번호가 일치합니다.");
   };
 
-  const handleDuplicationUserIdCheck = async (e) => {
-    e.preventDefault();
+  const handleDuplicationUserIdCheck: React.MouseEventHandler<
+    HTMLElement
+  > = async ($event) => {
+    $event.preventDefault();
 
     if (!userId) {
       requireInput();
@@ -100,15 +104,18 @@ const LoginRegister = () => {
     !result ? informUseableUserId() : failDuplicationCheckUserId();
   };
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleUserSave = async (e) => {
-    e.preventDefault();
+  const handleUserSave: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
 
     if (
       !userId ||
@@ -182,14 +189,15 @@ const LoginRegister = () => {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLFormElement;
     setForm((prev) => ({
       ...prev,
-      file: e.target.files[0],
+      file: target.files[0],
     }));
 
-    if (typeof e.target.files[0] !== "undefined") {
-      setImage(URL.createObjectURL(e.target.files[0]));
+    if (typeof target.files[0] !== "undefined") {
+      setImage(URL.createObjectURL(target.files[0]));
     } else {
       setImage("https://dummyimage.com/300x300");
     }

@@ -1,9 +1,8 @@
 import { Grid, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { Alert, Button, Card, Form, Row } from "react-bootstrap";
-import { requireInput } from "../util/swal/requirement";
 import { findUserId } from "../util/axios/login";
-import { informServerError } from "../util/swal/information";
+import { requireInput } from "../util/swal/requirement";
 
 /**
  * 아이디를 찾는 화면
@@ -17,15 +16,18 @@ const LoginFindId = () => {
   });
   const { userEmail, userName } = form;
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleUserIdFind = async (e) => {
-    e.preventDefault();
+  const handleUserIdFind: React.FormEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
 
     if (!userEmail) {
       requireInput();

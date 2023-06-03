@@ -43,6 +43,9 @@ importers:
       '@types/react':
         specifier: ^18.2.0
         version: 18.2.0
+      '@types/react-datepicker':
+        specifier: ^4.11.2
+        version: 4.11.2(react-dom@18.2.0)(react@18.2.0)
       '@types/react-dom':
         specifier: ^18.2.1
         version: 18.2.1
@@ -76,9 +79,6 @@ importers:
       net:
         specifier: ^1.0.2
         version: 1.0.2
-      range:
-        specifier: ^0.0.3
-        version: 0.0.3
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -3618,6 +3618,18 @@ packages:
 
   /@types/range-parser@1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
+    dev: false
+
+  /@types/react-datepicker@4.11.2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ELYyX3lb3K1WltqdlF1hbnaDGgzlF6PIR5T4W38cSEcfrQDIrPE+Ioq5pwRe/KEJ+ihHMjvTVZQkwJx0pWMNHQ==}
+    dependencies:
+      '@popperjs/core': 2.11.7
+      '@types/react': 18.2.0
+      date-fns: 2.30.0
+      react-popper: 2.3.0(@popperjs/core@2.11.7)(react-dom@18.2.0)(react@18.2.0)
+    transitivePeerDependencies:
+      - react
+      - react-dom
     dev: false
 
   /@types/react-dom@18.2.1:
@@ -9813,11 +9825,6 @@ packages:
   /range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
-    dev: false
-
-  /range@0.0.3:
-    resolution: {integrity: sha512-OxK2nY2bmeEB4NxoBraQIBOOeOIxoBvm6yt8MA1kLappgkG3SyLf173iOtT5woWycrtESDD2g0Nl2yt8YPoUnw==}
-    engines: {node: '>=0.8'}
     dev: false
 
   /raw-body@2.5.1:

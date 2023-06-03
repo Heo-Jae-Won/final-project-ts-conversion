@@ -20,15 +20,16 @@ const LoginForm = () => {
 
   const { userId, userPass } = form;
 
-  const onChangeForm = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin: React.FormEventHandler<HTMLElement> = async ($event) => {
+    $event.preventDefault();
 
     //로그인
     const result = (await login(form)).data;
@@ -68,7 +69,7 @@ const LoginForm = () => {
                 label="id"
                 value={userId}
                 name="userId"
-                onChange={onChangeForm}
+                onChange={handleFormChange}
               />
             </Grid>
 
@@ -82,7 +83,7 @@ const LoginForm = () => {
                 value={userPass}
                 name="userPass"
                 type="password"
-                onChange={onChangeForm}
+                onChange={handleFormChange}
               />
             </Grid>
 

@@ -1,5 +1,5 @@
 import { Grid, TextField } from "@material-ui/core";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DaumPostcode from "react-daum-postcode";
 import { useAddressStore } from "../module/module.address";
@@ -8,40 +8,50 @@ import { useAddressStore } from "../module/module.address";
  * 주소를 지정하는 화면
  * LoginRegister.jsx를 구성하는 하위 component
  */
-const Address = ({userAddress}) => {
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const changeAddress=useAddressStore((state)=>state.changeAddress);
-    const address=useAddressStore((state)=>state.address);
-    const handlePostCode = (data) => {
-        let fullAddress = data.address;
-        let extraAddress = "";
-    
-        if (data.addressType === "R") {
-          if (data.bname !== "") {
-            extraAddress += data.bname;
-          }
-          if (data.buildingName !== "") {
-            extraAddress +=
-              extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-          }
-          fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
-        }
-        changeAddress(fullAddress);
-      };
-    
-      const postCodeStyle = {
-        display: "block",
-        position: "absolute",
-        top: "10%",
-        width: "600px",
-        height: "600px",
-        padding: "7px",
-      };
+const Address = () => {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const changeAddress = useAddressStore((state) => state.changeAddress);
+  const address = useAddressStore((state) => state.address);
+  const handlePostCode = (data: any/*library거라 any로 걍 넣음 */) => {
+    let fullAddress = data.address;
+    let extraAddress = "";
 
+    if (data.addressType === "R") {
+      if (data.bname !== "") {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== "") {
+        extraAddress +=
+          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+    }
+    changeAddress(fullAddress);
+  };
+
+  //style이 안돼서 아래와 같이 만들어줌.
+  type Position = "static" | "relative" | "absolute" | "sticky" | "fixed";
+  interface PostCodeStyle {
+    display: string;
+    position: Position;
+    top: string;
+    width: string;
+    height: string;
+    padding: string;
+  }
+
+  const postCodeStyle: PostCodeStyle = {
+    display: "block",
+    position: "absolute",
+    top: "10%",
+    width: "600px",
+    height: "600px",
+    padding: "7px",
+  };
 
   return (
     <div>
-         <div className="modal-address">
+      <div className="modal-address">
         {isPopupOpen && (
           <div>
             <DaumPostcode
@@ -53,35 +63,35 @@ const Address = ({userAddress}) => {
         )}
       </div>
       <Grid item xs={12}>
-              <TextField
-                value={address || userAddress}
-                variant="outlined"
-                required
-                fullWidth
-                helperText="주소는 직접 입력이 불가능합니다"
-                FormHelperTextProps={{ style: { fontSize: 15 } }}
-                name="userAddress"
-                autoComplete="userAddress"
-                onChange={changeAddress}
-              />
-            </Grid>
-            <Button
-              type="button"
-              style={{ marginRight: 60, marginTop: 25 }}
-              onClick={() => setIsPopupOpen(true)}
-            >
-              우편번호 검색
-            </Button>
-            <Button
-              className="postCode_btn"
-              style={{ marginLeft: 140, marginTop: 25, width: "5rem" }}
-              type="button"
-              onClick={() => setIsPopupOpen(false)}
-            >
-              닫기
-            </Button>
+        <TextField
+          value={address}
+          variant="outlined"
+          required
+          fullWidth
+          helperText="주소는 직접 입력이 불가능합니다"
+          FormHelperTextProps={{ style: { fontSize: 15 } }}
+          name="userAddress"
+          autoComplete="userAddress"
+          onChange={changeAddress}
+        />
+      </Grid>
+      <Button
+        type="button"
+        style={{ marginRight: 60, marginTop: 25 }}
+        onClick={() => setIsPopupOpen(true)}
+      >
+        우편번호 검색
+      </Button>
+      <Button
+        className="postCode_btn"
+        style={{ marginLeft: 140, marginTop: 25, width: "5rem" }}
+        type="button"
+        onClick={() => setIsPopupOpen(false)}
+      >
+        닫기
+      </Button>
     </div>
-  )
-}
+  );
+};
 
-export default Address
+export default Address;
