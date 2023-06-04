@@ -1,16 +1,14 @@
 import { Grid, TextField } from "@material-ui/core";
 import { Rating } from "@mui/material";
+import { useUserStore } from "module/module.user";
 import React, { useState } from "react";
 import { Button, ButtonGroup, Card, Form, Row } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
-import { useUserStore } from "../../model/user.store";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { insertReview } from "../../util/axios/my/review";
 import {
   informNoPayment,
-  informServerError,
-  informSuccess,
+  informSuccess
 } from "../../util/swal/information";
-import { useLocation } from "react-router-dom";
 
 /**
  * 리뷰 쓰기 화면
@@ -33,21 +31,23 @@ const MyInsertReview = () => {
 
   const { reviewContent, reviewReceiver, reviewSender } = form;
 
-  const onChangeForm = (e) => {
+  const onChangeForm: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLFormElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
   const handleReviewInsert = async () => {
+    //HACK: Java에서는 int type과 double type으로 point, productCode를 받고 있다. 하지만 formData는 string으로 보낸다. 여태까진 잘 됐는데, 이제 어떻게 될지는 봐야알 것 같다.
     const formData = new FormData();
     formData.append("reviewContent", reviewContent);
     formData.append("reviewSender", reviewSender);
-    formData.append("reviewReceiver", reviewReceiver);
-    formData.append("point", point);
-    formData.append("payCode", payCode);
-    formData.append("productCode", productCode);
+    formData.append("reviewReceiver", reviewReceiver as string);
+    formData.append("point", String(point));
+    formData.append("payCode", payCode as string);
+    formData.append("productCode", String(productCode));
 
     //리뷰 등록
     const result = (await insertReview(formData)).data;
@@ -106,14 +106,11 @@ const MyInsertReview = () => {
           <hr />
           <span style={{ marginRight: 50, fontSize: 20 }}>별점</span>
           <Rating
-            emptySymbol="fa fa-star-o fa-2x"
-            fullSymbol="fa fa-star fa-2x"
             defaultValue={5}
             value={point}
             onChange={(event, newValue) => {
-              setPoint(newValue);
+              setPoint(newValue as number);
             }}
-            fractions={5}
             precision={0.5}
             max={5}
           />

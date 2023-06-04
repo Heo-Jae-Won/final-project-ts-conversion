@@ -4,8 +4,9 @@ import { Spinner } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Pagination from "react-js-pagination";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useUserStore } from "../../model/user.store";
 import { getReceivedReview } from "../../util/axios/my/review";
+import { useUserStore } from "module/module.user";
+import { Review } from "model/model.review";
 
 /**
  * 받은 리뷰 목록 화면
@@ -14,7 +15,7 @@ const MyReceiveReviewList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
   const [review, setReview] = useState([]);
   const [reviewTotal, setReviewTotal] = useState(0);
@@ -55,7 +56,7 @@ const MyReceiveReviewList = () => {
           </tr>
         </thead>
         <tbody>
-          {review.map((review) => (
+          {review.map((review : Review) => (
             <>
               <tr key={review.reviewCode}>
                 <td>{review.reviewContent}</td>
@@ -64,11 +65,8 @@ const MyReceiveReviewList = () => {
                 <td>
                   {" "}
                   <Rating
-                    emptySymbol="fa fa-star-o fa-2x"
-                    fullSymbol="fa fa-star fa-2x"
                     value={review.reviewPoint}
                     readOnly
-                    fractions={5}
                     precision={0.5}
                     max={5}
                   />

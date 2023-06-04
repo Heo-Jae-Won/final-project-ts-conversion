@@ -69,7 +69,7 @@ const MyInfo = () => {
     setLoading(true);
 
     //내 정보 조회
-    const result = (await getUserId(userId)).data;
+    const result = (await getUserId(userId as string)).data;
     setImage(result.userProfile);
     setForm(result);
     setLoading(false);
@@ -84,6 +84,7 @@ const MyInfo = () => {
 
     const isConfirmed = (await confirmUpdate()).isConfirmed;
     if (isConfirmed) {
+      //HACK: file을 넣어서 보내면 @RequestBody는 한 개 class만 받을 수 있어 dto에도 file을 넣어야 한다. 그럼 file type을 어떻게 넣어야할까? 아니면 base64encoding을 해야한다.
       const data = {
         userId: userId,
         userNickname: userNickname,
@@ -104,7 +105,7 @@ const MyInfo = () => {
     const isConfirmed = (await confirmDeactivate()).isConfirmed;
     if (isConfirmed) {
       //회원 탈퇴
-      await getUserStatus(userId);
+      await getUserStatus(userId as string);
       informSuccess();
       resetLoginUser();
       navigate("/");
