@@ -5,6 +5,7 @@ import Pagination from "react-js-pagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getNoticeList } from "../util/axios/notice";
 import NoticeItem from "./NoticeItem";
+import { Notice } from "model/model.notice";
 
 /**
  * 공지사항 목록
@@ -12,7 +13,7 @@ import NoticeItem from "./NoticeItem";
 const NoticeList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [searchType, setSearchType] = useState("제목");
@@ -31,8 +32,10 @@ const NoticeList = () => {
     setLoading(false);
   }, [page, query, searchType]);
 
-  const fetchFilteredList = (e) => {
-    if (e.keyCode === 13) {
+  const fetchFilteredList: React.KeyboardEventHandler<HTMLElement> = (
+    $event
+  ) => {
+    if ($event.key === "Enter") {
       fetchNoticeList();
     }
   };
@@ -50,8 +53,8 @@ const NoticeList = () => {
       />
     );
 
-  const handlePageChange = (e) => {
-    navigate(`/notice/noticeList?page=${e}`);
+  const handlePageChange = (pageNumber: number) => {
+    navigate(`/notice/noticeList?page=${pageNumber}`);
     window.scrollTo({
       top: 0,
       left: 150,
@@ -99,7 +102,7 @@ const NoticeList = () => {
           </tr>
         </thead>
         <tbody>
-          {noticeList.map((noticeList) => (
+          {noticeList.map((noticeList: Notice) => (
             <>
               <NoticeItem key={noticeList.noticeCode} noticeList={noticeList} />
             </>
@@ -117,7 +120,7 @@ const NoticeList = () => {
           pageRangeDisplayed={10}
           prevPageText={"‹"}
           nextPageText={"›"}
-          onChange={(e) => handlePageChange(e)}
+          onChange={(pageNumber) => handlePageChange(pageNumber)}
         />{" "}
       </div>
     </div>

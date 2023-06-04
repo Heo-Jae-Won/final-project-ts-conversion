@@ -2,11 +2,11 @@ import { Card, Grid, TextField } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../model/user.store";
 import { insertProductBoard } from "../util/axios/product.board";
 import { confirmInsert } from "../util/swal/confirmation";
 import { informSuccess } from "../util/swal/information";
 import { requireInput } from "../util/swal/requirement";
+import { useUserStore } from "module/module.user";
 
 /**
  * 상품 게시판 등록
@@ -34,20 +34,22 @@ const ProductBoardInsert = () => {
     productWriter,
   } = form;
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLFormElement;
     setForm((prev) => ({
       ...prev,
-      file: e.target.files[0],
+      file: target.files[0],
     }));
-    if (typeof e.target.files[0] !== "undefined") {
-      const url = URL.createObjectURL(e.target.files[0]);
+    if (typeof target.files[0] !== "undefined") {
+      const url = URL.createObjectURL(target.files[0]);
       setImage(url);
     }
   };

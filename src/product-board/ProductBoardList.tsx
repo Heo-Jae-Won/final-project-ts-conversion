@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Pagination.css";
 import { getProductBoardList } from "../util/axios/product.board";
 import ProductBoardItem from "./ProductBoardItem";
+import { ProductBoard } from "model/model.product.board";
 
 /**
  * 상품 게시판 목록
@@ -13,9 +14,9 @@ import ProductBoardItem from "./ProductBoardItem";
 const ProductBoardList = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const navigate = useNavigate();
-  const [postList, setPostList] = useState(["aaa"]);
+  const [postList, setPostList] = useState<Array<ProductBoard>>([]);
   const [productListTotal, setProductListTotal] = useState(1);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -32,8 +33,10 @@ const ProductBoardList = () => {
     setLoading(false);
   }, [page, query]);
 
-  const fetchFilteredProductBoardList = (e) => {
-    if (e.keyCode === 13) {
+  const fetchFilteredProductBoardList: React.KeyboardEventHandler<
+    HTMLElement
+  > = ($event) => {
+    if ($event.key === "Enter") {
       fetchProductBoardList();
     }
   };
@@ -51,8 +54,8 @@ const ProductBoardList = () => {
       />
     );
 
-  const onPageChange = (e) => {
-    navigate(`/productBoard/list?page=${e}`);
+  const onPageChange = (pageNumber: number) => {
+    navigate(`/productBoard/list?page=${pageNumber}`);
     window.scrollTo({
       top: 0,
       left: 150,
@@ -104,7 +107,7 @@ const ProductBoardList = () => {
       ></TextField>
 
       <Row style={{ marginLeft: 55 }}>
-        {postList?.map((postList) => (
+        {postList?.map((postList: ProductBoard) => (
           <ProductBoardItem key={postList.productCode} postList={postList} />
         ))}
       </Row>

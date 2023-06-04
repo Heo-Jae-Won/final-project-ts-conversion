@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, ButtonGroup, Nav } from "react-bootstrap";
-import { useUserStore } from "../model/user.store";
 import { onClickDislike, onClickLike } from "../util/axios/product.board";
 import { useNavigate } from "react-router-dom";
-const LikeButton = ({ productCode }) => {
+import { useUserStore } from "module/module.user";
+const LikeButton = ({ productCode }: { productCode: number }) => {
   const [isClickedLike, setIsClickedLike] = useState(false);
   const { loginUserNickname } = useUserStore();
   const handleLikeClick = async () => {
@@ -19,9 +19,10 @@ const LikeButton = ({ productCode }) => {
 
   const navigate = useNavigate();
 
-  const onClick = (e) => {
-    e.preventDefault();
-    const href = e.target.getAttribute("href");
+  const onClick: React.MouseEventHandler<HTMLElement> = ($event) => {
+    $event.preventDefault();
+    const target = $event.target as HTMLAnchorElement;
+    const href = target.getAttribute("href") as string;
     navigate(href);
   };
 
@@ -29,7 +30,7 @@ const LikeButton = ({ productCode }) => {
     <ButtonGroup>
       <Button
         className="btn-10"
-        onClick={loginUserNickname && handleLikeClick}
+        onClick={loginUserNickname ? handleLikeClick : undefined}
         variant="primary"
       >
         <img

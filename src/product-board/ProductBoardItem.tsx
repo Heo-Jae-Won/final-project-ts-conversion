@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Col } from "react-bootstrap";
-import { useUserStore } from "../model/user.store";
 import { getProductBoardLikeByUser } from "../util/axios/product.board";
 import LikeButton from "./LikeButton";
+import { ProductBoard } from "model/model.product.board";
+import { useUserStore } from "module/module.user";
 
 /**
  * ProductBoardList의 실제 화면
  */
-const ProductBoardItem = ({ postList }) => {
+const ProductBoardItem = ({ postList }: {postList: ProductBoard}) => {
   const {
     productCode,
     productTitle,

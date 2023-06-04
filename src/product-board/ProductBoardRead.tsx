@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, ButtonGroup, Form, Row, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { app } from "../fireStore";
-import { useUserStore } from "../model/user.store";
 import {
   deleteProductBoard,
   getProductBoardRead,
@@ -19,6 +18,8 @@ import {
 import { confirmDelete } from "../util/swal/confirmation";
 import { informSuccess } from "../util/swal/information";
 import { DeleteAlready } from "../util/swal/service.exception";
+import { useUserStore } from "module/module.user";
+import { ProductBoard } from "model/model.product.board";
 
 /**
  * 상품 조회
@@ -29,22 +30,13 @@ const ProductBoardRead = () => {
   const db = getFirestore(app);
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [comparisonProductCode, setComparisonProductCode] = useState([]);
+  const [comparisonProductCode, setComparisonProductCode] = useState<
+    Array<string>
+  >([]);
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
   const loginUserId = useUserStore((state) => state.loginUserId);
-  const [postRead, setPostRead] = useState({
-    productTitle: "",
-    productContent: "",
-    productWriter: "",
-    productLikecnt: "",
-    productImage: "",
-    productViewcnt: "",
-    productRegDate: "",
-    productName: "",
-    userPoint: "",
-    file: null,
-    userId: "",
-  });
+  const [file, setFile] = useState<string | Blob>();
+  const [postRead, setPostRead] = useState({} as ProductBoard);
   const {
     userId,
     productTitle,
@@ -54,7 +46,6 @@ const ProductBoardRead = () => {
     productImage,
     productPrice,
     productName,
-    file,
   } = postRead;
 
   const fetchProductBoard = useCallback(async () => {
@@ -65,7 +56,7 @@ const ProductBoardRead = () => {
 
     const q = getFirebaseQuery(db, loginUserId);
 
-    let rows = [];
+    let rows: string[] = [];
 
     //productCode를 query에 추가
     getOnSnapShotProductCode(q, rows);
@@ -83,26 +74,27 @@ const ProductBoardRead = () => {
     setLoading(false);
   }, [db, loginUserId, navigate, productCode]);
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setPostRead((postRead) => ({
       ...postRead,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleFileChange = (e) => {
-    setPostRead((postRead) => ({
-      ...postRead,
-      file: e.target.files[0],
-    }));
-    if (typeof e.target.files[0] !== "undefined") {
-      const url = URL.createObjectURL(e.target.files[0]);
+  const handleFileChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLFormElement;
+    if (typeof target.files[0] !== "undefined") {
+      setFile(target.files[0]);
+      const url = URL.createObjectURL(target.files[0]);
       setImage(url);
     }
   };
 
-  const handleProductBoardUpdate = async (e) => {
-    e.preventDefault();
+  const handleProductBoardUpdate: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
 
     const isConfirmed = await informSuccess();
     if (isConfirmed) {
@@ -116,7 +108,10 @@ const ProductBoardRead = () => {
         productName,
       };
       const formData = new FormData();
-      formData.append("file", file);
+
+      if (file) {
+        formData.append("file", file);
+      }
       formData.append(
         "data",
         new Blob([JSON.stringify(data)], {
@@ -135,8 +130,10 @@ const ProductBoardRead = () => {
     }
   };
 
-  const handleProductBoardDelete = async (e) => {
-    e.preventDefault();
+  const handleProductBoardDelete: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
     const isConfirmed = await confirmDelete();
     if (isConfirmed) {
       //상품 정보 삭제
@@ -146,8 +143,8 @@ const ProductBoardRead = () => {
     }
   };
 
-  const setChatRoomList = async () => {
-    if (!comparisonProductCode.includes(productCode)) {
+  const setChatRoomList: React.MouseEventHandler<HTMLElement> = async () => {
+    if (!comparisonProductCode.includes(productCode as string)) {
       const docRef = collection(db, "chatroom");
 
       //상품 채팅방 추가
@@ -200,7 +197,9 @@ const ProductBoardRead = () => {
                 required
                 fullWidth
                 value={productWriter}
-                readOnly
+                InputProps={{
+                  readOnly: true,
+                }}
                 label="작성자"
                 name="productWriter"
                 autoComplete="productWriter"
@@ -215,7 +214,9 @@ const ProductBoardRead = () => {
                 fullWidth
                 value={productTitle}
                 onChange={
-                  loginUserNickname === productWriter && handleFormChange
+                  loginUserNickname === productWriter
+                    ? handleFormChange
+                    : undefined
                 }
                 label="제목"
                 helperText="제목은 50까지로 제한"
@@ -234,7 +235,9 @@ const ProductBoardRead = () => {
                 fullWidth
                 value={productContent}
                 onChange={
-                  loginUserNickname === productWriter && handleFormChange
+                  loginUserNickname === productWriter
+                    ? handleFormChange
+                    : undefined
                 }
                 label="내용"
                 helperText="내용은 300자까지로 제한"
@@ -254,7 +257,9 @@ const ProductBoardRead = () => {
                 FormHelperTextProps={{ style: { fontSize: 15 } }}
                 value={productPrice}
                 onChange={
-                  loginUserNickname === productWriter && handleFormChange
+                  loginUserNickname === productWriter
+                    ? handleFormChange
+                    : undefined
                 }
                 name="productPrice"
                 type="number"
@@ -272,7 +277,9 @@ const ProductBoardRead = () => {
                 FormHelperTextProps={{ style: { fontSize: 15 } }}
                 value={productName}
                 onChange={
-                  loginUserNickname === productWriter && handleFormChange
+                  loginUserNickname === productWriter
+                    ? handleFormChange
+                    : undefined
                 }
                 name="productName"
               />
@@ -284,16 +291,8 @@ const ProductBoardRead = () => {
                 <span style={{ marginRight: 50, fontSize: 20 }}>
                   판매자 별점
                 </span>
-                <Rating
-                  emptySymbol="fa fa-star-o fa-2x"
-                  fullSymbol="fa fa-star fa-2x"
-                  value={userPoint}
-                  readOnly
-                  fractions={5}
-                  precision={0.5}
-                  max={5}
-                />
-                ({userPoint})
+                <Rating value={userPoint} readOnly precision={0.5} max={5} />(
+                {userPoint})
               </>
             ) : (
               <h1>거래 이력이 없습니다.</h1>
@@ -319,7 +318,7 @@ const ProductBoardRead = () => {
                 {loginUserNickname !== productWriter && (
                   <Button
                     style={{ marginRight: 90 }}
-                    onClick={() => setChatRoomList()}
+                    onClick={($event) => setChatRoomList($event)}
                   >
                     채팅하기
                   </Button>
