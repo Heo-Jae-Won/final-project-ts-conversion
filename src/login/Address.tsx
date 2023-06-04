@@ -8,11 +8,11 @@ import { useAddressStore } from "../module/module.address";
  * 주소를 지정하는 화면
  * LoginRegister.jsx를 구성하는 하위 component
  */
-const Address = () => {
+const Address = ({ userAddress }: { userAddress: string }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const changeAddress = useAddressStore((state) => state.changeAddress);
   const address = useAddressStore((state) => state.address);
-  const handlePostCode = (data: any/*library거라 any로 걍 넣음 */) => {
+  const handlePostCode = (data: any /*library거라 any로 걍 넣음 */) => {
     let fullAddress = data.address;
     let extraAddress = "";
 
@@ -64,7 +64,7 @@ const Address = () => {
       </div>
       <Grid item xs={12}>
         <TextField
-          value={address}
+          value={address || userAddress}
           variant="outlined"
           required
           fullWidth

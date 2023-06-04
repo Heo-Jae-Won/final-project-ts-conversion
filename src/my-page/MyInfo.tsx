@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Alert, Button, Form, Row, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import Address from "../login/Address";
-import { useAddressStore } from "../model/address.store";
-import { useUserStore } from "../model/user.store";
+import { useAddressStore } from "../module/module.address";
 import {
   getUserId,
   getUserNickname,
@@ -14,6 +13,8 @@ import { checkEmailValid, checkPhoneNumberValid } from "../util/regex/regex";
 import { confirmDeactivate, confirmUpdate } from "../util/swal/confirmation";
 import { informSuccess } from "../util/swal/information";
 import { requireInput, requireValidationPass } from "../util/swal/requirement";
+import { useUserStore } from "module/module.user";
+import { User } from "model/model.user";
 
 /**
  * 내 정보 화면
@@ -25,31 +26,23 @@ const MyInfo = () => {
   const [message, setMessage] = useState("");
   const { userId } = useParams();
   const address = useAddressStore((state) => state.address);
-  const deleteEverything = useUserStore((state) => state.deleteEverything);
-  const [form, setForm] = useState({
-    userId: userId,
-    userPass: "",
-    userName: "",
-    userNickname: "",
-    userEmail: "",
-    userTel: "",
-    userAddress: "",
-    userStatus: "1",
-    userGender: "",
-    file: null,
-  });
-  const { userNickname, userEmail, userAddress, userTel, userProfile, file } =
-    form;
+  const resetLoginUser = useUserStore((state) => state.resetLoginUser);
+  const [form, setForm] = useState({} as User);
+  const [file, setFile] = useState<string | Blob>();
+  const { userNickname, userEmail, userAddress, userTel, userProfile } = form;
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
-  const handleUserNicknameCheck = async (e) => {
-    e.preventDefault();
+  const handleUserNicknameCheck: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
     if (!userNickname) {
       requireInput();
     }
@@ -61,15 +54,13 @@ const MyInfo = () => {
       : setMessage("해당 닉네임은 사용할 수 없습니다");
   };
 
-  const handleFileChange = (e) => {
-    setForm((prev) => ({
-      ...prev,
-      file: e.target.files[0],
-    }));
+  const handleFileChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLFormElement;
 
     //files이 설정되지 않아 undefined가 되면 오류가 발생한다. 따라서 예외처리가 필요하다.
-    if (typeof e.target.files[0] !== "undefined") {
-      const url = URL.createObjectURL(e.target.files[0]);
+    if (typeof target.files[0] !== "undefined") {
+      setFile(target.files[0]);
+      const url = URL.createObjectURL(target.files[0]);
       setImage(url);
     }
   };
@@ -115,7 +106,7 @@ const MyInfo = () => {
       //회원 탈퇴
       await getUserStatus(userId);
       informSuccess();
-      deleteEverything();
+      resetLoginUser();
       navigate("/");
     }
   };

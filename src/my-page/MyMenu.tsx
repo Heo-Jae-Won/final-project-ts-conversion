@@ -1,7 +1,7 @@
+import { useUserStore } from 'module/module.user';
 import React, { useState } from 'react';
 import { Button, Offcanvas, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../model/user.store';
 
 /**
  * my-page를 구성하는 메뉴
@@ -53,7 +53,7 @@ const MyMenu = () => {
             <br />
             <div className='img26'>
                 <img
-                    size='10px'
+                    sizes='10px'
                     className="d-block w-100"
                     src="/image/image26.jpg"
                     alt="빈 이미지"

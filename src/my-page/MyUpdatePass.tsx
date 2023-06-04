@@ -2,7 +2,6 @@ import { Grid, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { Button, Card, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useUserStore } from "../model/user.store";
 import { updatePassword } from "../util/axios/my/user";
 import { checkPasswordValid } from "../util/regex/regex";
 import { confirmUpdate } from "../util/swal/confirmation";
@@ -16,6 +15,7 @@ import {
   requireInput,
   requireValidationPass,
 } from "../util/swal/requirement";
+import { useUserStore } from "module/module.user";
 
 /**
  * 내 비밀번호 수정 화면
@@ -31,16 +31,19 @@ const MyUpdatePass = () => {
   const { userId, userPass } = form;
   let isChecked = false;
 
-  const handleFormChange = (e) => {
+  const handleFormChange: React.ChangeEventHandler<HTMLElement> = ($event) => {
+    const target = $event.target as HTMLInputElement;
     setForm((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     }));
   };
 
   //비밀번호 유효성 검증
-  const handlePassValidate = async (e) => {
-    e.preventDefault();
+  const handlePassValidate: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
     if (!confirmPassword) {
       requireInput();
     } else if (!checkPasswordValid(userPass)) {
@@ -53,8 +56,10 @@ const MyUpdatePass = () => {
     }
   };
 
-  const handlePasswordUpdate = async (e) => {
-    e.preventDefault();
+  const handlePasswordUpdate: React.MouseEventHandler<HTMLElement> = async (
+    $event
+  ) => {
+    $event.preventDefault();
 
     const result = await confirmUpdate();
     if (result.isConfirmed) {
@@ -114,7 +119,7 @@ const MyUpdatePass = () => {
 
           <Button
             onClick={
-              isChecked === true
+              isChecked
                 ? handlePasswordUpdate
                 : requireEqualityPassword
             }
