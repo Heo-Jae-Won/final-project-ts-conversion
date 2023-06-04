@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Chart from "react-google-charts";
-import { useUserStore } from "../../model/user.store";
+import Chart, { GoogleChartWrapperChartType } from "react-google-charts";
 import { getTradeBuyChart } from "../../util/axios/my/trade";
+import { useUserStore } from "module/module.user";
+import { PayChart } from "model/model.pay.chart";
 
 /**
  * 구매 목록 시각화 차트 화면
  */
 const MyBuyListChart = () => {
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
-  const [data, setData] = useState([]);
-  const chartType = useRef("Bar");
+  const [data, setData] = useState<Array<PayChart>>([]);
+  const chartType = useRef<GoogleChartWrapperChartType>();
   const title = useRef("직업별인원수");
 
   const options = {
@@ -36,11 +37,11 @@ const MyBuyListChart = () => {
   }, [loginUserNickname]);
 
   //HACK: ts 적용 때 공통함수로 빼내기
-  const toArrayTradeBuyChartData = (result) => {
+  const toArrayTradeBuyChartData = (result: Array<PayChart>) => {
     title.current = "2022 월별 구매 총액";
     chartType.current = "LineChart";
 
-    let array = [];
+    let array: Array<any> = [];
     array.push(["월", "총액"]);
     result.forEach((item) => {
       array.push([item.month, item.payPrice]);

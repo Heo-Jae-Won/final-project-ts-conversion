@@ -3,7 +3,8 @@ import { Button, Spinner, Table } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getTradeSellList } from "../../util/axios/my/trade";
-import { useUserStore } from "../../model/user.store";
+import { useUserStore } from "module/module.user";
+import { Pay } from "model/model.pay";
 
 /**
  * 판매 화면 목록
@@ -12,9 +13,9 @@ const MySellList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
-  const [sellList, setSellList] = useState(["aaa"]);
+  const [sellList, setSellList] = useState<Array<Pay>>([]);
   const [sellListTotal, setSellListTotal] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +23,7 @@ const MySellList = () => {
     setLoading(true);
 
     //판매 목록
-    const result = (await getTradeSellList(loginUserNickname, page)).data;
+    const result = (await getTradeSellList(loginUserNickname, String(page))).data;
     setSellList(result.sellList);
     setSellListTotal(result.sellListTotal);
     setLoading(false);
@@ -32,8 +33,8 @@ const MySellList = () => {
     fetchSellList();
   }, [fetchSellList, page]);
 
-  const handlePageChange = (e) => {
-    navigate(`/my/sell?page=${e}`);
+  const handlePageChange = (pageNumber: number) => {
+    navigate(`/my/sell?page=${pageNumber}`);
     window.scrollTo({
       top: 0,
       left: 150,
@@ -67,7 +68,7 @@ const MySellList = () => {
           </tr>
         </thead>
         <tbody>
-          {sellList?.map((sellList) => (
+          {sellList?.map((sellList : Pay) => (
             <>
               <tr key={sellList.payCode}>
                 <td>{sellList.payPrice}</td>
@@ -77,7 +78,7 @@ const MySellList = () => {
                     <Button
                       onClick={() =>
                         navigate(
-                          `/my/review/insert/${sellList.payCode}?buyer=${sellList.seller}&seller=${sellList.buyer}&productCode=${sellList.productCode}`
+                          `/my/review/insert/${sellList.payCode}?buyer=${sellList.paySeller}&seller=${sellList.payBuyer}&productCode=${sellList.productCode}`
                         )
                       }
                     >

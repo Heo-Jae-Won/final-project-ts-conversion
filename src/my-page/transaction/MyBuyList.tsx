@@ -3,7 +3,8 @@ import { Button, Spinner, Table } from "react-bootstrap";
 import Pagination from "react-js-pagination";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getTradeBuyList } from "../../util/axios/my/trade";
-import { useUserStore } from "../../model/user.store";
+import { useUserStore } from "module/module.user";
+import { Pay } from "model/model.pay";
 
 /**
  * 구매 목록 화면
@@ -12,9 +13,9 @@ const MyBuyList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  let page = parseInt(params.get("page")) || 1;
+  let page = parseInt(params.get("page") as string) || 1;
   const loginUserNickname = useUserStore((state) => state.loginUserNickname);
-  const [buyList, setBuyList] = useState(["aaa"]);
+  const [buyList, setBuyList] = useState<Array<Pay>>([]);
   const [buyListTotal, setBuyListTotal] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +23,8 @@ const MyBuyList = () => {
     setLoading(true);
 
     //구매 목록
-    const result = (await getTradeBuyList(loginUserNickname, page)).data;
+    const result = (await getTradeBuyList(loginUserNickname, String(page)))
+      .data;
     setBuyList(result.buyList);
     setBuyListTotal(result.buyListTotal);
     setLoading(false);
@@ -41,8 +43,8 @@ const MyBuyList = () => {
       />
     );
 
-  const handlePageChange = (e) => {
-    navigate(`/my/buy?page=${e}`);
+  const handlePageChange = (pageNumber: number) => {
+    navigate(`/my/buy?page=${pageNumber}`);
     window.scrollTo({
       top: 0,
       left: 150,
@@ -67,17 +69,17 @@ const MyBuyList = () => {
           </tr>
         </thead>
         <tbody>
-          {buyList.map((list) => (
+          {buyList.map((list: Pay) => (
             <>
               <tr key={list.payCode}>
                 <td>{list.payPrice}</td>
-                <td>{list.regDate}</td>
+                <td>{list.payRegDate}</td>
                 {list.payBuyerReview === 0 ? (
                   <td>
                     <Button
                       onClick={() =>
                         navigate(
-                          `/my/review/insert/${list.payCode}?buyer=${list.buyer}&seller=${list.seller}&productCode=${list.productCode}`
+                          `/my/review/insert/${list.payCode}?buyer=${list.payBuyer}&seller=${list.paySeller}&productCode=${list.productCode}`
                         )
                       }
                     >
